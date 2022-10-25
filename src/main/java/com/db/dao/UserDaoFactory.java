@@ -1,7 +1,11 @@
 package com.db.dao;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
 public class UserDaoFactory {
-    //커넥션을 이용해 UserDao를 조립해주는 메서드 생성
+    @Bean
     public UserDao awsUserDao() {
         return new UserDao(new AwsConnectionMaker());
     }
