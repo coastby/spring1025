@@ -8,71 +8,148 @@ import java.util.Map;
 
 public class UserDao {
     private ConnectionMaker cm;
-    private Connection c;
 
     public UserDao(ConnectionMaker cm) {
         this.cm = cm;
     }
 
-    public void add(User user) throws ClassNotFoundException, SQLException {
-        c = cm.getConnection();
-        PreparedStatement ps = c.prepareStatement(
-                "insert into Users(id, name, password) values(?, ?, ?)");
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
+    public void add(User user) throws SQLException {
+        Connection c = null;
+        PreparedStatement ps = null;
 
-        ps.executeUpdate();
+        try {
+            c = cm.getConnection();
+            ps = c.prepareStatement(
+                    "insert into Users(id, name, password) values(?, ?, ?)");
+            ps.setString(1, user.getId());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getPassword());
 
-        ps.close();
-        c.close();
-
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if(ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                }
+            }
+            if(c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
     }
 
-    public User findById(String id) throws ClassNotFoundException, SQLException {
-        c = cm.getConnection();
-
-        PreparedStatement ps = c.prepareStatement(
-                "select * from Users where id = ?");
-        ps.setString(1, id);
-
-        ResultSet rs = ps.executeQuery();
+    public User findById(String id) throws SQLException {
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         User user = null;
-        if(rs.next()) {
-            user = new User(rs.getString("id"), rs.getString("name"), rs.getString("password"));
+        try {
+            c = cm.getConnection();
+
+            ps = c.prepareStatement(
+                    "select * from Users where id = ?");
+            ps.setString(1, id);
+
+            rs = ps.executeQuery();
+            if(rs.next()) {
+                user = new User(rs.getString("id"), rs.getString("name"), rs.getString("password"));
+            }
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                }
+            }
+            if(ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                }
+            }
+            if(c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                }
+            }
+
         }
-
-        rs.close();
-        ps.close();
-        c.close();
-
         if(user == null) throw new EmptyResultDataAccessException(1);
 
         return user;
     }
 
-    public void deleteAll() throws SQLException, ClassNotFoundException {
-        c = cm.getConnection();
+    public void deleteAll() throws SQLException{
+        Connection c = null;
+        PreparedStatement ps = null;
 
-        PreparedStatement ps = c.prepareStatement("DELETE FROM Users;");
+        try {
+            c = cm.getConnection();
 
-        ps.executeUpdate();
+            ps = c.prepareStatement("DELETE FROM Users;");
 
-        ps.close();
-        c.close();
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if(ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                }
+            }
+            if(c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
     }
 
-    public int getCount() throws SQLException, ClassNotFoundException {
+    public int getCount() throws SQLException{
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         int count = 0;
-        c = cm.getConnection();
-        PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM Users;");
-        ResultSet rs = ps.executeQuery();
-        if(rs.next()){
-            count = rs.getInt(1);
+        try {
+            c = cm.getConnection();
+            ps = c.prepareStatement("SELECT COUNT(*) FROM Users;");
+            rs = ps.executeQuery();
+            if(rs.next()){
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                }
+            }
+            if(ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                }
+            }
+            if(c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                }
+            }
         }
-        rs.close();
-        ps.close();
-        c.close();
         return count;
     }
 }
