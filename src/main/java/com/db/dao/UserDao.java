@@ -6,10 +6,15 @@ import java.sql.*;
 import java.util.Map;
 
 public class UserDao {
+    private ConnectionMaker cm;
+    private Connection c;
+
+    public UserDao(ConnectionMaker cm) {
+        this.cm = cm;
+    }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        ConnectionMaker cm = new AwsConnectionMaker();
-        Connection c = cm.getConnection();
+        c = cm.getConnection();
         PreparedStatement ps = c.prepareStatement(
                 "insert into Users(id, name, password) values(?, ?, ?)");
         ps.setString(1, user.getId());
@@ -24,8 +29,7 @@ public class UserDao {
     }
 
     public User findById(String id) throws ClassNotFoundException, SQLException {
-        ConnectionMaker cm = new AwsConnectionMaker();
-        Connection c = cm.getConnection();
+        c = cm.getConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "select * from Users where id = ?");
