@@ -7,14 +7,14 @@ import java.util.Map;
 
 public class UserDao {
 
-    public void add() throws ClassNotFoundException, SQLException {
+    public void add(User user) throws ClassNotFoundException, SQLException {
         ConnectionMaker cm = new AwsConnectionMaker();
         Connection c = cm.getConnection();
         PreparedStatement ps = c.prepareStatement(
-                "insert into users(id, name, password) values(?, ?, ?)");
-        ps.setString(1, "01");
-        ps.setString(2, "Kyeongrok");
-        ps.setString(3, "password");
+                "insert into Users(id, name, password) values(?, ?, ?)");
+        ps.setString(1, user.getId());
+        ps.setString(2, user.getName());
+        ps.setString(3, user.getPassword());
 
         ps.executeUpdate();
 
@@ -28,7 +28,7 @@ public class UserDao {
         Connection c = cm.getConnection();
 
         PreparedStatement ps = c.prepareStatement(
-                "select * from users where id = ?");
+                "select * from Users where id = ?");
         ps.setString(1, id);
 
         ResultSet rs = ps.executeQuery();
@@ -40,10 +40,5 @@ public class UserDao {
         c.close();
 
         return user;
-    }
-
-    public static void main (String[]args) throws SQLException, ClassNotFoundException {
-        UserDao userDao = new UserDao();
-        userDao.add();
     }
 }
