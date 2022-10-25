@@ -28,4 +28,15 @@ class UserDaoTest {
         assertEquals("cat", user1.getPassword());
     }
 
+    @Test
+    void deleteAllTest() throws SQLException, ClassNotFoundException {
+        UserDao userDao = context.getBean("awsUserDao", UserDao.class);
+        userDao.add(new User("6", "hoon", "cat"));
+        assertEquals(1, userDao.getCount());
+
+        userDao.deleteAll();
+        assertEquals(0, userDao.getCount());
+
+    }
+
 }

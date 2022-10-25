@@ -45,4 +45,29 @@ public class UserDao {
 
         return user;
     }
+
+    public void deleteAll() throws SQLException, ClassNotFoundException {
+        c = cm.getConnection();
+
+        PreparedStatement ps = c.prepareStatement("DELETE FROM Users;");
+
+        ps.executeUpdate();
+
+        ps.close();
+        c.close();
+    }
+
+    public int getCount() throws SQLException, ClassNotFoundException {
+        int count = 0;
+        c = cm.getConnection();
+        PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM Users;");
+        ResultSet rs = ps.executeQuery();
+        if(rs.next()){
+            count = rs.getInt(1);
+        }
+        rs.close();
+        ps.close();
+        c.close();
+        return count;
+    }
 }
