@@ -6,13 +6,10 @@ import java.sql.*;
 import java.util.Map;
 
 public class UserDao {
-    public void add() throws ClassNotFoundException, SQLException {
-        Map<String, String> env = System.getenv();
-        String dbPassword = env.get("DB_PASSWORD");
 
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection c = DriverManager.getConnection(
-                "jdbc:mysql://localhost/likelion-db", "root", dbPassword);
+    public void add() throws ClassNotFoundException, SQLException {
+        ConnectionMaker cm = new AwsConnectionMaker();
+        Connection c = cm.getConnection();
         PreparedStatement ps = c.prepareStatement(
                 "insert into users(id, name, password) values(?, ?, ?)");
         ps.setString(1, "01");
@@ -26,13 +23,9 @@ public class UserDao {
 
     }
 
-    public User get(String id) throws ClassNotFoundException, SQLException {
-        Map<String, String> env = System.getenv();
-        String dbPassword = env.get("DB_PASSWORD");
-
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection c = DriverManager.getConnection(
-                "jdbc:mysql://localhost/likelion-db", "root", dbPassword);
+    public User findById(String id) throws ClassNotFoundException, SQLException {
+        ConnectionMaker cm = new AwsConnectionMaker();
+        Connection c = cm.getConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "select * from users where id = ?");
