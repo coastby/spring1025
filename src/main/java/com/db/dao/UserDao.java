@@ -19,11 +19,10 @@ public class UserDao {
 
         try {
             c = cm.getConnection();
-            ps = c.prepareStatement(
-                    "insert into Users(id, name, password) values(?, ?, ?)");
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
+
+            //StatementStategy 적용
+            StatementStrategy smst = new AddStatement(user);
+            ps = smst.makeStatement(c);
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -95,7 +94,8 @@ public class UserDao {
         try {
             c = cm.getConnection();
 
-            ps = c.prepareStatement("DELETE FROM Users;");
+            StatementStrategy smst = new DeleteAllStatement();
+            smst.makeStatement(c);
 
             ps.executeUpdate();
         } catch (SQLException e) {
