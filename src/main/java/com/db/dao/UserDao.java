@@ -13,15 +13,13 @@ public class UserDao {
         this.cm = cm;
     }
 
-    public void add(User user) throws SQLException {
+    public void jdbcContextWithStatementStrategy(StatementStrategy smst) throws SQLException {
         Connection c = null;
         PreparedStatement ps = null;
 
         try {
             c = cm.getConnection();
 
-            //StatementStategy 적용
-            StatementStrategy smst = new AddStatement(user);
             ps = smst.makeStatement(c);
 
             ps.executeUpdate();
@@ -41,6 +39,10 @@ public class UserDao {
                 }
             }
         }
+    }
+
+    public void add(User user) throws SQLException {
+        jdbcContextWithStatementStrategy(new AddStatement(user));
     }
 
     public User findById(String id) throws SQLException {
@@ -88,32 +90,7 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException{
-        Connection c = null;
-        PreparedStatement ps = null;
-
-        try {
-            c = cm.getConnection();
-
-            StatementStrategy smst = new DeleteAllStatement();
-            smst.makeStatement(c);
-
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if(ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                }
-            }
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                }
-            }
-        }
+        jdbcContextWithStatementStrategy(new DeleteAllStatement());
     }
 
     public int getCount() throws SQLException{
