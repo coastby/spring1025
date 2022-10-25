@@ -18,14 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserDaoTest {
     @Autowired
     ApplicationContext context;
-    UserDao userDao;
     @BeforeEach
-    void setContext() throws SQLException, ClassNotFoundException {
+    void setContext() throws SQLException {
         UserDao userDao = context.getBean("awsUserDao", UserDao.class);
         userDao.deleteAll();
     }
     @Test
-    void addAndGetTest() throws SQLException, ClassNotFoundException {
+    void addAndGetTest() throws SQLException {
         //Factory 적용
         UserDao userDao = context.getBean("awsUserDao", UserDao.class);
         userDao.add(new User("1", "hoon", "cat"));
@@ -41,7 +40,7 @@ class UserDaoTest {
     }
 
     @Test
-    void deleteAllTest() throws SQLException, ClassNotFoundException {
+    void deleteAllTest() throws SQLException {
         UserDao userDao = context.getBean("awsUserDao", UserDao.class);
         userDao.add(new User("6", "hoon", "cat"));
         assertEquals(1, userDao.getCount());

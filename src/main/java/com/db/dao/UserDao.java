@@ -3,14 +3,15 @@ package com.db.dao;
 import com.db.domain.User;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.Map;
 
 public class UserDao {
-    private ConnectionMaker cm;
+    private DataSource dataSource;
 
-    public UserDao(ConnectionMaker cm) {
-        this.cm = cm;
+    public UserDao(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public void jdbcContextWithStatementStrategy(StatementStrategy smst) throws SQLException {
@@ -18,7 +19,7 @@ public class UserDao {
         PreparedStatement ps = null;
 
         try {
-            c = cm.getConnection();
+            c = dataSource.getConnection();
 
             ps = smst.makeStatement(c);
 
@@ -51,7 +52,7 @@ public class UserDao {
         ResultSet rs = null;
         User user = null;
         try {
-            c = cm.getConnection();
+            c = dataSource.getConnection();
 
             ps = c.prepareStatement(
                     "select * from Users where id = ?");
@@ -99,7 +100,7 @@ public class UserDao {
         ResultSet rs = null;
         int count = 0;
         try {
-            c = cm.getConnection();
+            c = dataSource.getConnection();
             ps = c.prepareStatement("SELECT COUNT(*) FROM Users;");
             rs = ps.executeQuery();
             if(rs.next()){
