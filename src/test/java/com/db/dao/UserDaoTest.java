@@ -10,7 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserDaoTest {
     @Test
     void addAndGetTest() throws SQLException, ClassNotFoundException {
-        UserDao userDao = new UserDao(new AwsConnectionMaker());
+        //Factory 적용
+        UserDao userDao = new UserDaoFactory().awsUserDao();
         userDao.add(new User("1", "hoon", "cat"));
         userDao.add(new User("2", "python", "dog"));
 
