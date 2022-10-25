@@ -5,7 +5,7 @@ import com.db.domain.User;
 import java.sql.*;
 import java.util.Map;
 
-public class Dao {
+public class UserDao {
     public void add() throws ClassNotFoundException, SQLException {
         Map<String, String> env = System.getenv();
         String dbPassword = env.get("DB_PASSWORD");
@@ -50,7 +50,7 @@ public class Dao {
     }
 
     public static void main (String[]args) throws SQLException, ClassNotFoundException {
-        Dao dao = new Dao();
-        dao.add();
+        UserDao userDao = new UserDao();
+        userDao.add();
     }
 }
